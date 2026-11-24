@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="ko">
-<head><link rel="manifest" href="manifest.json"><meta name="theme-color" content="#18062c"><link rel="icon" href="icon-192.png"><link rel="apple-touch-icon" href="icon-192.png"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-capable" content="yes">
+<head><link rel="manifest" href="manifest.json"><meta name="theme-color" content="#1a0b2e"><link rel="icon" href="icon-192.png"><link rel="apple-touch-icon" href="icon-192.png"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-capable" content="yes">
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#2a0a4a">
@@ -1626,18 +1626,18 @@ function secEl(d){const w=E('div','sc');const t=d.t.replace(/^[^\p{L}〈]+/u,'')
 function lockWrap(inner,msg){const lb=E('div','lockbox'+(state.unlocked?'':' locked'));const c=E('div','lk');c.appendChild(inner);lb.appendChild(c);
  if(!state.unlocked){const ov=E('div','lockov');ov.innerHTML=`<div class="msg">🔒 ${msg}<br><span class="gold">${CFG.PRICE}</span>에 열립니다</div>`;const b=E('button','btn red','🔓 지금 열어 보기');b.onclick=openBuy;ov.appendChild(b);lb.appendChild(ov)}return lb}
 function renderResult(R){
- const el=$('res-inner');el.innerHTML='';const h=R.h,nm=R.name?R.name+'님':'그대';
+ const el=$('res-inner');el.innerHTML='';const h=R.h,DOH=(typeof isDoh==='function'&&isDoh(getP())),nm=DOH?'光德道皇帝 桓旭':(R.name?R.name+'님':'그대');
  if(R.legacy||!R.mind||!R.mind.length){renderLegacy(R);return}
  /* 표제 */
- const top=E('div','rtop',`<div class="r1">光 德 占 堂</div><div class="r2">${esc(nm)}의 점사</div><div class="r3">${R.date} · 제 ${R.no}괘 〈${h.k}〉 ${h.h}</div>`);el.appendChild(top);
+ const top=E('div','rtop',`<div class="r1">光 德 占 堂</div><div class="r2">${esc(nm)}${DOH?'<br>天命占':'의 점사'}</div><div class="r3">${R.date} · 제 ${R.no}괘 〈${h.k}〉 ${h.h}</div>`);el.appendChild(top);
  /* 아룀 */
- const a=hj('ar');a.appendChild(E('h3','','<span class="ic">📜</span>도황께 올리는 아룀'));
- a.appendChild(E('p','',`光德道主 桓旭 도황께서 몸소 물으셨습니다. 신령 영연황후가 삼가 아룁니다. ${esc(nm)}께서 이르시기를,`));
+ const a=hj('ar');a.appendChild(E('h3','',DOH?'<span class="ic">📜</span>도황제께 올리는 아룀':'<span class="ic">📜</span>도황께 올리는 아룀'));
+ a.appendChild(E('p','',DOH?`光德道皇帝 桓旭 폐하께서 스스로 물으셨습니다. 신령 영연황후가 삼가 아룁니다. 도황제께서 이르시기를,`:`光德道主 桓旭 도황께서 몸소 물으셨습니다. 신령 영연황후가 삼가 아룁니다. ${esc(nm)}께서 이르시기를,`));
  a.appendChild(E('p','qq','“'+esc(R.q)+'”'));
  a.appendChild(E('p','',`하셨고, 마음의 결과 때를 아래와 같이 읽었습니다.`));
  const tg=E('div','tgs');R.A.tags.forEach(t=>tg.appendChild(E('span','tg',esc(t))));a.appendChild(tg);el.appendChild(a);
  /* 마음 읽기 */
- const m=E('div','mind');m.appendChild(E('div','mh','<span>💗</span> 지금 그대의 마음<small>말씀하지 않으셔도 황후는 이미 읽었습니다</small>'));
+ const m=E('div','mind');m.appendChild(E('div','mh','<span>💗</span> '+(DOH?'지금 도황제의 마음':'지금 그대의 마음')+'<small>말씀하지 않으셔도 황후는 이미 읽었습니다</small>'));
  const mk=(L)=>{const w=E('div','ml');w.appendChild(E('div','mk',esc(L.k)));L.p.forEach(t=>w.appendChild(E('p','',esc(t))));return w};
  const freeL=R.mind.filter(x=>!x.lock),lockL=R.mind.filter(x=>x.lock);
  freeL.forEach(L=>m.appendChild(mk(L)));
@@ -1655,7 +1655,7 @@ function renderResult(R){
  /* 점괘 풀이 */
  const v=hj('vs');v.appendChild(E('h3','','<span class="ic">🐦</span>점괘 풀이'));
  v.appendChild(E('div','verse',esc(h.msg)+'<br>'+esc(h.adv)));
- const w=E('div','words');R.words.forEach((t,i)=>w.appendChild(E('p',i===1?'hl':'',esc(t))));v.appendChild(E('div','sub2','환욱도황의 말씀 — '+esc(nm)+'께'));v.appendChild(w);el.appendChild(v);
+ const w=E('div','words');R.words.forEach((t,i)=>w.appendChild(E('p',i===1?'hl':'',esc(t))));v.appendChild(E('div','sub2',DOH?'환욱도황제께서 스스로에게 내리시는 말씀':'환욱도황의 말씀 — '+esc(nm)+'께'));v.appendChild(w);el.appendChild(v);
  /* 천명패 */
  const cd=E('div','mind cdk');cd.appendChild(E('div','mh','<span>🃏</span> 천명패가 펼쳐졌습니다<small>카드를 눌러 한 장씩 뒤집으십시오</small>'));
  const cr=E('div','cds');const pn=CPOS[R.rel&&R.rel!=='solo'?'rel':'solo'];
@@ -1670,13 +1670,13 @@ function renderResult(R){
  free.forEach(s=>{const c=hj('ts');c.appendChild(secEl(s));el.appendChild(c)});
  if(lk.length){const c=hj('ts');lk.forEach((s,i)=>{const x=secEl(s);if(i)x.classList.add('gap');c.appendChild(x)});el.appendChild(lockWrap(c,'시기 · 세 걸음 처방 · 삼갈 것 · 행운 · 수호부 사용법'))}
  /* 수호부 */
- const tw=hj('tw');tw.appendChild(E('h3','','<span class="ic">🛡</span>그대만을 위한 수호부'));
+ const tw=hj('tw');tw.appendChild(E('h3','','<span class="ic">🛡</span>'+(DOH?'도황제의 御護符':'그대만을 위한 수호부')));
  const tv=E('canvas','tcv');tv.width=420;tv.height=780;tw.appendChild(tv);drawTalisman(tv.getContext('2d'),210,390,360,740,R,0,!state.unlocked);
  tw.appendChild(E('p','',state.unlocked?'수호부를 휴대폰 바탕화면에 깔아 두십시오. 열 때마다 그대를 지킵니다.':'잠금을 열면 워터마크 없는 고화질 수호부와 바탕화면용 한 장이 함께 열립니다.'));el.appendChild(tw);
  const mkb=(cls,txt,fn)=>{const b=E('button','btn '+cls,txt);b.onclick=fn;el.appendChild(b);return b};
  mkb('','📱 바탕화면 수호부 저장',saveWall);mkb('sec','🎬 영상 저장하기',saveVideo);mkb('sec','🖼 부적 카드 저장하기',saveCard);mkb('sec','📤 공유하기',shareIt);
  /* 맞았는지 */
- const fb=hj('fb');fb.appendChild(E('h3','','<span class="ic">🙏</span>황후의 마음 읽기가 맞았습니까?'));
+ const fb=hj('fb');fb.appendChild(E('h3','','<span class="ic">🙏</span>'+(DOH?'황후가 올린 아룀이 맞았습니까?':'황후의 마음 읽기가 맞았습니까?')));
  const fr=E('div','row');[['맞았다','👍 맞았어요'],['조금','🤏 조금요'],['아니다','🙅 아니에요']].forEach(([v,l])=>{const b=E('button','btn sec',l);b.style.padding='3.4% 1%';b.onclick=()=>{try{const k='gd_fb';const a=JSON.parse(localStorage.getItem(k)||'[]');a.push({t:Date.now(),v,no:R.no});localStorage.setItem(k,JSON.stringify(a.slice(-50)))}catch(e){}fb.innerHTML='';fb.appendChild(E('h3','','<span class="ic">🙏</span>고맙습니다'));fb.appendChild(E('p','','그대의 한마디가 황후의 눈을 더 맑게 합니다.'))};fr.appendChild(b)});fb.appendChild(fr);el.appendChild(fb);
  /* 덕인 */
  if(!getP().deok){const j=hj('jn');j.appendChild(E('h3','','<span class="ic">🏯</span>광덕 덕인이 되십시오 (무료)'));j.appendChild(E('p','','가입하면 ① 매일 아침 광덕말씀 ② 하루를 여는 기도 ③ 이 사연의 후일담을 칠 일 뒤 다시 봐 드립니다 ④ 해마다 새 수호부를 드립니다.'));el.appendChild(j);mkb('','🏯 덕인 되기',startJoin)}
@@ -1770,5 +1770,5 @@ const _oB2=openBox;openBox=function(){_oB2();const p=getP();if(isDoh(p)){const r
 $('adm').onclick=()=>{if(confirm('점주 모드를 해제할까요?'))setAdmin(false)};syncAdmin();
 Promise.all([loadAll(),document.fonts?Promise.all([document.fonts.load('900 40px GD','光德占堂道場印令受'),document.fonts.load('40px BHS','가나다'),document.fonts.load('700 40px GWB','가나다'),document.fonts.load('40px DOK','가나다')]).catch(()=>0):0]).then(()=>{$('loading').style.display='none';window.__ready=true});
 </script>
-<script>if('serviceWorker' in navigator)addEventListener('load',()=>navigator.serviceWorker.register('sw.js').catch(()=>{}))</script></body>
+<script>if('serviceWorker' in navigator)navigator.serviceWorker.register('sw.js').catch(()=>{});</script></body>
 </html>
