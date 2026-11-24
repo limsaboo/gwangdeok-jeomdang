@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="ko">
-<head>
+<head><link rel="manifest" href="manifest.json"><meta name="theme-color" content="#18062c"><link rel="icon" href="icon-192.png"><link rel="apple-touch-icon" href="icon-192.png"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-capable" content="yes">
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#2a0a4a">
@@ -1726,5 +1726,5 @@ function addTenBox(){
 $('adm').onclick=()=>{if(confirm('점주 모드를 해제할까요?'))setAdmin(false)};syncAdmin();
 Promise.all([loadAll(),document.fonts?Promise.all([document.fonts.load('900 40px GD','光德占堂道場印令受'),document.fonts.load('40px BHS','가나다'),document.fonts.load('700 40px GWB','가나다'),document.fonts.load('40px DOK','가나다')]).catch(()=>0):0]).then(()=>{$('loading').style.display='none';window.__ready=true});
 </script>
-</body>
+<script>if('serviceWorker' in navigator)addEventListener('load',()=>navigator.serviceWorker.register('sw.js').catch(()=>{}))</script></body>
 </html>
