@@ -1732,7 +1732,7 @@ function addTenBox(){
   ${n>=100?'<button class="btn" id="ten-pledge">🏅 서약 수호부 저장 (인장 100개 달성)</button>':'<div class="tiny" style="text-align:center">🏅 인장 100개를 채우면 이름이 새겨진 <b class="gold">서약 수호부</b>를 받습니다</div>'}
   <button class="btn sec" id="ten-view">📜 십계 두루마리 보기·저장</button>`;
  w.parentNode.insertBefore(box,w);
- const dm0=ensureDM(),nmEl=document.querySelector('#box-in .deok .nm');if(nmEl&&!document.getElementById('dmline')){const d=document.createElement('div');d.id='dmline';d.className='dmline';d.innerHTML=`光德名 <b>${dm0.h}</b> (${dm0.k})`;nmEl.insertAdjacentElement('afterend',d)}
+ const dm0=ensureDM(),nmEl=document.querySelector('#box-in .deok .nm');if(nmEl&&!document.getElementById('dmline')){const d=document.createElement('div');d.id='dmline';d.className='dmline';d.innerHTML=dm0.doh?`光德道主 <b>桓旭道皇帝</b>`:`光德名 <b>${dm0.h}</b> (${dm0.k})`;nmEl.insertAdjacentElement('afterend',d)}
  $('ten-do').onclick=()=>{if(done){toast('오늘의 인장은 이미 받으셨습니다');return}
   updP(q=>{q.seals=q.seals||[];q.seals.push({d:t,i:ti})});toast('🔴 인장이 찍혔습니다 — '+TENH[ti]+'戒');openBox()};
  $('ten-view').onclick=()=>openTen('view');
@@ -1742,23 +1742,30 @@ function addTenBox(){
 const DMP=[[['林','림'],['彬','빈'],['楨','정'],['榮','영'],['松','송'],['秀','수']],[['昭','소'],['煥','환'],['曜','요'],['熙','희'],['明','명'],['炫','현']],[['培','배'],['圭','규'],['堅','견'],['垣','원'],['基','기'],['均','균']],[['鎬','호'],['鍾','종'],['鉉','현'],['錫','석'],['鏞','용'],['銀','은']],[['淵','연'],['潤','윤'],['浩','호'],['洙','수'],['泳','영'],['海','해']]];
 const DMV=[['仁','인'],['德','덕'],['慧','혜'],['誠','성'],['和','화'],['善','선'],['慈','자'],['順','순'],['信','신'],['義','의']];
 function hsh(s){let h=2166136261;for(const c of s){h^=c.charCodeAt(0);h=Math.imul(h,16777619)}return h>>>0}
-function ensureDM(){const p=getP();if(p.dm)return p.dm;
+const DOHH='307072fb91044184e518a58426ada9d1f745879cb020cc2984bfb196792f4130';
+function isDoh(p){const B=p.birth;if(!B||!p.name)return false;const z=n=>String(n).padStart(2,'0');return sha256('光德道主|'+p.name+'|'+B.sy+'-'+z(B.sm)+'-'+z(B.sd)+'|'+p.hi)===DOHH}
+function ensureDM(){const p=getP();if(isDoh(p)){if(!(p.dm&&p.dm.doh)){const d={h:'桓旭',k:'환욱',doh:1,el:1,own:true,d:today()};updP(q=>{q.dm=d});return d}return p.dm}if(p.dm&&!p.dm.doh)return p.dm;if(p.dm)return(updP(q=>{delete q.dm}),ensureDM());
  const h=hsh((p.name||'')+(p.bstr||'')+'光德');let el=h%5,own=false;
  if(p.birth){try{el=sajuOf(p.birth,p.hi>=0?p.hi:-1).lack;own=true}catch(e){}}
  const a=DMP[el][(h>>>3)%6],b=DMV[(h>>>9)%10];
  const dm={h:a[0]+b[0],k:a[1]+b[1],el,own,d:today()};updP(q=>{q.dm=dm});return dm}
 function dmBanner(p,dm,join){
+ if(dm.doh)return `<div class="dmb"><div class="dm1">光德道 最高 玉座</div><div class="dm2">光德道主</div><div class="dm3">桓旭</div><div class="dm4">道 皇 帝</div><div class="dm5">광덕도황제께서 스스로 光德名을 내리십니다.<br><b>桓旭</b>(환욱) · 本名 <b>${p.name}${p.hanja?'('+p.hanja+')':''}</b><br>光德道場의 모든 덕인이 우러러 본받는 자리입니다.</div></div>`;
  return `<div class="dmb"><div class="dm1">${join?'환욱도황께서 덕인에게 이름을 내리십니다':'환욱도황이 하사하신 이름'}</div>
   <div class="dm2">光德名</div><div class="dm3">${dm.h}</div><div class="dm4">${dm.k}</div>
   <div class="dm5">${dm.own?`그대에게 부족한 <b>${EL[dm.el]}(${ELK[dm.el]})</b> 기운을 채우고 흉액을 막아 주는 이름입니다.`:`<b>${EL[dm.el]}(${ELK[dm.el]})</b> 기운을 북돋아 앞길을 밝혀 주는 이름입니다.`}<br>光德道場에서는 <b>${dm.h}(${p.name}${p.hanja?' '+p.hanja:''})</b>으로 불립니다.</div></div>`}
 function perScroll(src,cb){const p=getP(),dm=p.dm,B=p.birth;const im=new Image();
  im.onload=async()=>{try{await document.fonts.load(`900 40px ${FHAN}`);await document.fonts.load(`800 40px ${FONT}`)}catch(e){}
   const c=document.createElement('canvas');c.width=im.width;c.height=im.height;const x=c.getContext('2d');x.drawImage(im,0,0);const s=im.width/1556;
-  const bs=B?` · 生 ${B.sy}.${String(B.sm).padStart(2,'0')}.${String(B.sd).padStart(2,'0')}`:'';
+  const bs=B?` · 生 ${B.sy}.${String(B.sm).padStart(2,'0')}.${String(B.sd).padStart(2,'0')}${dm.doh?' 戌時':''}`:'';
   x.textAlign='center';x.textBaseline='middle';
+  if(dm.doh){x.font=`900 ${60*s}px ${FHAN}`;x.fillStyle='#b01018';x.strokeStyle='#b01018';x.lineWidth=2.5*s;const a='光德道主  桓旭道皇帝';x.strokeText(a,778*s,250*s);x.fillText(a,778*s,250*s);const t=`自賜 光德名 桓旭(환욱) · 本名 ${p.name}${p.hanja?'('+p.hanja+')':''}${bs}`;let f=40;x.font=`800 ${f*s}px ${FONT}`;while(x.measureText(t).width>1150*s&&f>26){f--;x.font=`800 ${f*s}px ${FONT}`}x.fillStyle='#24120a';x.fillText(t,778*s,324*s);cb(c.toDataURL('image/jpeg',.9));return}
   x.font=`900 ${60*s}px ${FHAN}`;x.fillStyle='#b01018';x.strokeStyle='#b01018';x.lineWidth=2.5*s;const t1=`光德名  ${dm.h} (${dm.k})`;x.strokeText(t1,778*s,250*s);x.fillText(t1,778*s,250*s);
   x.font=`800 ${40*s}px ${FONT}`;x.fillStyle='#24120a';x.fillText(`本名 ${p.name}${p.hanja?'('+p.hanja+')':''}${bs}`,778*s,324*s);
   cb(c.toDataURL('image/jpeg',.9))};im.src=src}
+
+/* ── 道皇帝 보관함 표기 ── */
+const _oB2=openBox;openBox=function(){_oB2();const p=getP();if(isDoh(p)){const r=document.querySelector('#box-in .deok .rk');if(r)r.textContent='光德道皇帝'}};
 
 $('adm').onclick=()=>{if(confirm('점주 모드를 해제할까요?'))setAdmin(false)};syncAdmin();
 Promise.all([loadAll(),document.fonts?Promise.all([document.fonts.load('900 40px GD','光德占堂道場印令受'),document.fonts.load('40px BHS','가나다'),document.fonts.load('700 40px GWB','가나다'),document.fonts.load('40px DOK','가나다')]).catch(()=>0):0]).then(()=>{$('loading').style.display='none';window.__ready=true});
