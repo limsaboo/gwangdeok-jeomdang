@@ -297,6 +297,7 @@ textarea::placeholder,input::placeholder{color:#8a7344}
    <h1 style="font-size:min(7.2vw,3.9vh)">먼저 그대를<br>알려 주십시오</h1>
    <div class="hint">태어난 날과 시를 적으면 황후가 그대의 기운까지 읽어 도황께 아룁니다. 적은 내용은 이 폰에만 보관됩니다.</div>
    <div><label>🙇 이름 또는 별칭 (부적에 새겨집니다)</label><input type="text" id="me-name" maxlength="8" placeholder="예) 길동"></div>
+   <div><label>漢 한자 이름 (있으면 적어 주십시오 · 두루마리에 함께 적힙니다)</label><input type="text" id="me-hanja" maxlength="6" placeholder="예) 林贊祐 (없으면 비워 두세요)"></div>
    <div><label>성별</label><div id="me-g"></div></div>
    <div><label>🎂 태어난 날 (숫자 8자리)</label><input type="text" id="me-birth" inputmode="numeric" maxlength="8" placeholder="예) 19621231"><div id="me-cal" style="margin-top:1.2vh"></div>
     <label id="me-leapl" style="display:none;margin-top:.6vh"><input type="checkbox" id="me-leap"> 윤달에 태어났습니다</label></div>
@@ -837,11 +838,11 @@ mkChips('rel-c',RELITEMS,'solo',v=>{const solo=v==='solo';$('ot-box').style.disp
 
 /* ═════════ 흐름: 점사 ═════════ */
 const FL={mode:'divine',me:null,ot:null};
-function loadMeForm(){const p=getP();$('me-name').value=p.name||'';$('me-birth').value=p.bstr||'';if(p.g)mkChips('me-g',[['f','여자'],['m','남자']],p.g);if(p.cal)mkChips('me-cal',[['solar','양력'],['lunar','음력']],p.cal,v=>{$('me-leapl').style.display=v==='lunar'?'block':'none'});$('me-leapl').style.display=p.cal==='lunar'?'block':'none';$('me-leap').checked=!!p.leap;$('me-hour').value=(p.hi==null?-1:p.hi)}
+function loadMeForm(){const p=getP();$('me-name').value=p.name||'';$('me-hanja').value=p.hanja||'';$('me-birth').value=p.bstr||'';if(p.g)mkChips('me-g',[['f','여자'],['m','남자']],p.g);if(p.cal)mkChips('me-cal',[['solar','양력'],['lunar','음력']],p.cal,v=>{$('me-leapl').style.display=v==='lunar'?'block':'none'});$('me-leapl').style.display=p.cal==='lunar'?'block':'none';$('me-leap').checked=!!p.leap;$('me-hour').value=(p.hi==null?-1:p.hi)}
 function goDivine(){FL.mode='divine';const p=getP();if(p.name){FL.me=p;showRel()}else{loadMeForm();show('s-me')}}
 function showRel(){const p=getP();$('rel-who').innerHTML=`👤 <span class="gold">${p.name||'그대'}</span>님의 정보로 점칩니다 · <u id="rel-edit">고치기</u>`;$('rel-edit').onclick=()=>{loadMeForm();show('s-me')};show('s-rel')}
 function readMe(skip){const name=$('me-name').value.trim();if(!name){toast('이름이나 별칭을 적어 주십시오');return null}
- const o={name,g:SEL['me-g'],cal:SEL['me-cal'],leap:$('me-leap').checked,hi:+$('me-hour').value,bstr:$('me-birth').value.replace(/\D/g,'')};
+ const o={name,hanja:($('me-hanja').value.match(/[\u4e00-\u9fff\u3400-\u4dbf]/g)||[]).join(''),g:SEL['me-g'],cal:SEL['me-cal'],leap:$('me-leap').checked,hi:+$('me-hour').value,bstr:$('me-birth').value.replace(/\D/g,'')};
  if(!skip&&o.bstr){const b=parseBirth(o.bstr,o.cal,o.leap);if(b==='lunarfail'){toast('이 폰에서는 음력 변환이 안 됩니다. 양력으로 적어 주십시오');return null}if(!b){toast('태어난 날을 숫자 8자리로 바르게 적어 주십시오');return null}o.birth=b}
  if(skip){o.bstr='';o.birth=null;o.hi=-1}
  return o}
@@ -1749,14 +1750,14 @@ function ensureDM(){const p=getP();if(p.dm)return p.dm;
 function dmBanner(p,dm,join){
  return `<div class="dmb"><div class="dm1">${join?'환욱도황께서 덕인에게 이름을 내리십니다':'환욱도황이 하사하신 이름'}</div>
   <div class="dm2">光德名</div><div class="dm3">${dm.h}</div><div class="dm4">${dm.k}</div>
-  <div class="dm5">${dm.own?`그대에게 부족한 <b>${EL[dm.el]}(${ELK[dm.el]})</b> 기운을 채우고 흉액을 막아 주는 이름입니다.`:`<b>${EL[dm.el]}(${ELK[dm.el]})</b> 기운을 북돋아 앞길을 밝혀 주는 이름입니다.`}<br>光德道場에서는 <b>${dm.h}(${p.name})</b>으로 불립니다.</div></div>`}
+  <div class="dm5">${dm.own?`그대에게 부족한 <b>${EL[dm.el]}(${ELK[dm.el]})</b> 기운을 채우고 흉액을 막아 주는 이름입니다.`:`<b>${EL[dm.el]}(${ELK[dm.el]})</b> 기운을 북돋아 앞길을 밝혀 주는 이름입니다.`}<br>光德道場에서는 <b>${dm.h}(${p.name}${p.hanja?' '+p.hanja:''})</b>으로 불립니다.</div></div>`}
 function perScroll(src,cb){const p=getP(),dm=p.dm,B=p.birth;const im=new Image();
  im.onload=async()=>{try{await document.fonts.load(`900 40px ${FHAN}`);await document.fonts.load(`800 40px ${FONT}`)}catch(e){}
   const c=document.createElement('canvas');c.width=im.width;c.height=im.height;const x=c.getContext('2d');x.drawImage(im,0,0);const s=im.width/1556;
   const bs=B?` · 生 ${B.sy}.${String(B.sm).padStart(2,'0')}.${String(B.sd).padStart(2,'0')}`:'';
   x.textAlign='center';x.textBaseline='middle';
   x.font=`900 ${60*s}px ${FHAN}`;x.fillStyle='#b01018';x.strokeStyle='#b01018';x.lineWidth=2.5*s;const t1=`光德名  ${dm.h} (${dm.k})`;x.strokeText(t1,778*s,250*s);x.fillText(t1,778*s,250*s);
-  x.font=`800 ${40*s}px ${FONT}`;x.fillStyle='#24120a';x.fillText(`本名 ${p.name}${bs}`,778*s,324*s);
+  x.font=`800 ${40*s}px ${FONT}`;x.fillStyle='#24120a';x.fillText(`本名 ${p.name}${p.hanja?'('+p.hanja+')':''}${bs}`,778*s,324*s);
   cb(c.toDataURL('image/jpeg',.9))};im.src=src}
 
 $('adm').onclick=()=>{if(confirm('점주 모드를 해제할까요?'))setAdmin(false)};syncAdmin();
