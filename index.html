@@ -242,8 +242,8 @@ textarea::placeholder,input::placeholder{color:#8a7344}
    <div style="flex:1"></div>
    <button class="btn" id="b-begin">🙏 영연황후께 소원 빌기</button>
    <div class="row"><button class="btn sec" id="b-word">🌅 아침<br>광덕말씀</button><button class="btn sec" id="b-pray">🙏 하루를<br>여는 기도</button><button class="btn sec" id="b-box">🏯 <span id="box-l">덕인<br>되기</span></button></div>
-   <div class="tiny">光德道場</div>
-   <div class="biz" style="white-space:nowrap">통아저씨 · 대표 임찬우 · 사업자 608-54-02294<br>통신판매업 제2025-서울양천-0915호 · 양천구 남부순환로69길 15</div>
+   <button class="btn sec" id="b-pay" style="padding:1.6%;font-size:min(3.8vw,2vh)">💳 결제 안내 · 코드 입력</button>
+   <div class="biz" style="white-space:nowrap">통아저씨 · 대표 임찬우 · 사업자 608-54-02294<br>통신판매업 제2025-서울양천-0915호<br>서울 양천구 남부순환로69길 15, 1층</div>
   </div>
  </section>
 
@@ -1002,6 +1002,7 @@ function prayEnd(mins){let rw=null;const p=updP(q=>{q.pray=q.pray||{days:[],mins
 
 $('b-word').onclick=()=>{WD.off=0;openWord()};$('b-pray').onclick=openPray;
 syncHome();
+$('b-pay')&&($('b-pay').onclick=()=>openBuy());
 function openBuy(){$('m-price').textContent=CFG.PRICE;const cp=$('m-copy');if(cp)cp.onclick=()=>{const t='39612003391';(navigator.clipboard?navigator.clipboard.writeText(t):Promise.reject()).then(()=>toast('계좌번호를 복사했습니다'),()=>{const x=document.createElement('textarea');x.value=t;document.body.appendChild(x);x.select();try{document.execCommand('copy');toast('계좌번호를 복사했습니다')}catch(e){toast('39612003391 을 눌러 복사해 주십시오')}x.remove()})};$('m-chat').href=CFG.CHAT;$('m-buy').classList.add('on')}
 function dl(blob,name){const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=name;document.body.appendChild(a);a.click();setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove()},4000)}
 function fname(ext){return '光德占堂_'+(state.res.name||'부적')+'_'+state.res.h.k+'.'+ext}
