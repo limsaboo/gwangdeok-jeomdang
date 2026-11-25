@@ -90,7 +90,7 @@ textarea{min-height:19vh;resize:none}
 .tcv{display:block;width:62%;margin:0 auto;border-radius:10px}
 .modal{position:absolute;inset:0;z-index:20;background:rgba(10,0,25,.9);display:none;align-items:center;justify-content:center;padding:6%}
 .modal.on{display:flex}
-.modal .box{width:100%;background:#2a0a4a;border:3px solid #ffd400;border-radius:20px;padding:5%;display:flex;flex-direction:column;gap:1.6vh;line-height:2}
+.modal .box{width:100%;max-height:100%;overflow-y:auto;background:#2a0a4a;border:3px solid #ffd400;border-radius:20px;padding:5%;display:flex;flex-direction:column;gap:1.6vh;line-height:2}
 .price{font-size:min(9vw,4.8vh);color:#ffd400;text-align:center}
 #toast{position:absolute;left:50%;bottom:8%;transform:translateX(-50%);background:#ffd400;color:#2a0a4a;border-radius:999px;padding:10px 20px;font-size:16px;font-weight:900;z-index:30;display:none;white-space:nowrap}
 #loading{position:absolute;inset:0;z-index:50;background:#12041f;display:flex;align-items:center;justify-content:center;color:#ffd400;font-size:20px;text-align:center;line-height:2}
@@ -216,6 +216,12 @@ textarea::placeholder,input::placeholder{color:#8a7344}
 .dmb b{color:#ffd400}
 .dmline{font-size:min(4.4vw,2.3vh);color:#ffe9b0;font-weight:800;margin:1% 0}
 .dmline b{color:#ffd23a;font-size:1.25em}
+.bank{display:flex;flex-direction:column;gap:1.2vh}
+.bank .bk1{color:#fff;font-weight:800;font-size:min(4.2vw,2.2vh);line-height:1.7}
+.bank .bk1 b{color:#ffd400}
+.bank .bk2{color:#fff;font-weight:900;font-size:min(5vw,2.6vh);line-height:1.9;text-align:center;background:#1a0630;border:2px solid #ffd400;border-radius:12px;padding:2.5%}
+.bank .bk2 b{color:#ffd400;letter-spacing:.04em}
+.biz{color:#d8c2ff;font-weight:700;font-size:min(3.2vw,1.7vh);line-height:1.8;text-align:center}
 
 </style>
 </head>
@@ -237,6 +243,7 @@ textarea::placeholder,input::placeholder{color:#8a7344}
    <button class="btn" id="b-begin">🙏 영연황후께 소원 빌기</button>
    <div class="row"><button class="btn sec" id="b-word">🌅 아침<br>광덕말씀</button><button class="btn sec" id="b-pray">🙏 하루를<br>여는 기도</button><button class="btn sec" id="b-box">🏯 <span id="box-l">덕인<br>되기</span></button></div>
    <div class="tiny">光德道場</div>
+   <div class="biz" style="white-space:nowrap">통아저씨 · 대표 임찬우 · 사업자 608-54-02294<br>통신판매업 제2025-서울양천-0915호 · 양천구 남부순환로69길 15</div>
   </div>
  </section>
 
@@ -376,10 +383,18 @@ textarea::placeholder,input::placeholder{color:#8a7344}
  <div class="modal" id="m-buy"><div class="box">
   <div class="price" id="m-price"></div>
   <div style="color:#fff;font-size:min(4.4vw,2.3vh)">🔓 열리는 것<br>· 도황의 <span class="gold">상세 점사</span> 전체<br>· <span class="gold">나만의 부적</span> 고화질 카드 저장</div>
-  <a class="btn" id="m-chat" target="_blank" rel="noopener" style="text-decoration:none">💬 카카오톡으로 코드 받기</a>
+  <div class="bank">
+   <div class="bk1">① 아래 계좌로 <b>3,900원</b> 입금</div>
+   <div class="bk2">농협 <b>39612003391</b><br>예금주 임찬우</div>
+   <button class="btn sec" id="m-copy" style="padding:2.4%">📋 계좌번호 복사</button>
+   <div class="bk1">② 카카오톡에 <b>입금자명</b>만 보내기</div>
+   <a class="btn" id="m-chat" target="_blank" rel="noopener" style="text-decoration:none">💬 카카오톡으로 입금 알리기</a>
+   <div class="bk1">③ 확인 후 받은 <b>코드</b>를 아래에 입력</div>
+  </div>
   <input type="text" id="m-code" placeholder="받은 코드를 입력하세요" autocapitalize="characters" autocomplete="off">
   <button class="btn red" id="m-ok">🔑 코드로 열기</button>
   <button class="btn sec" id="m-close" style="padding:2.4%">닫기</button>
+  <div class="biz">※ 코드로 풀이가 열린 뒤에는 환불이 어렵습니다. 입금 전 확인해 주십시오. 잘못 입금하셨거나 열리지 않으면 카카오톡으로 알려 주십시오.<br>상호 통아저씨 · 대표 임찬우<br>서울 양천구 남부순환로69길 15, 1층<br>사업자등록 608-54-02294<br>통신판매업 제2025-서울양천-0915호<br>010-4119-0031 · brain.saboo@gmail.com</div>
  </div></div>
  <div id="toast"></div>
 </div>
@@ -987,7 +1002,7 @@ function prayEnd(mins){let rw=null;const p=updP(q=>{q.pray=q.pray||{days:[],mins
 
 $('b-word').onclick=()=>{WD.off=0;openWord()};$('b-pray').onclick=openPray;
 syncHome();
-function openBuy(){$('m-price').textContent=CFG.PRICE;$('m-chat').href=CFG.CHAT;$('m-buy').classList.add('on')}
+function openBuy(){$('m-price').textContent=CFG.PRICE;const cp=$('m-copy');if(cp)cp.onclick=()=>{const t='39612003391';(navigator.clipboard?navigator.clipboard.writeText(t):Promise.reject()).then(()=>toast('계좌번호를 복사했습니다'),()=>{const x=document.createElement('textarea');x.value=t;document.body.appendChild(x);x.select();try{document.execCommand('copy');toast('계좌번호를 복사했습니다')}catch(e){toast('39612003391 을 눌러 복사해 주십시오')}x.remove()})};$('m-chat').href=CFG.CHAT;$('m-buy').classList.add('on')}
 function dl(blob,name){const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=name;document.body.appendChild(a);a.click();setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove()},4000)}
 function fname(ext){return '光德占堂_'+(state.res.name||'부적')+'_'+state.res.h.k+'.'+ext}
 function saveVideo(){if(!state.video){toast('이 폰은 영상 저장을 지원하지 않습니다. 카드 저장을 이용해 주세요');return}
